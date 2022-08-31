@@ -18,3 +18,7 @@
 
 [Insertion](https://www.geeksforgeeks.org/avl-tree-set-1-insertion/?ref=lbp)
 [Deletion](https://www.geeksforgeeks.org/avl-tree-set-2-deletion/?ref=lbp)
+
+### Building
+
+Build with Cmake
