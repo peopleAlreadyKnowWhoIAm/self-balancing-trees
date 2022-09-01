@@ -1,4 +1,4 @@
-#include "red-black-tree.h"
+#include "red-black-tree.hpp"
 #include <vector>
 
 #include <iostream>
@@ -13,43 +13,45 @@ int main() {
 
     for (auto i : a) {
         cout<<i<<endl;
-        tree.insert(i);
+        tree.Insert(i);
     }
 
-    tree.remove(49);
+    tree.Remove(49);
 
-    tree.remove(42);
+    tree.Remove(42);
 
-    tree.remove(81);
+    tree.Remove(81);
 
-    tree.remove(67);
+    tree.Remove(67);
 
-    tree.remove(70);
+    tree.Remove(70);
 
-    tree.remove(75);
+    tree.Remove(75);
 
-    tree.remove(97);
+    tree.Remove(97);
 
-    tree.remove(51);
+    tree.Remove(51);
 
-    tree.remove(6);
+    tree.Remove(6);
 
-    tree.remove(43);
+    tree.Remove(43);
 
-    tree.remove(5);
+    tree.Remove(5);
 
-    tree.remove(32);
+    tree.Remove(32);
 
-    tree.remove(93);
+    tree.Remove(93);
 
-    tree.remove(56);
+    tree.Remove(56);
 
-    tree.remove(36);
 
-    tree.remove(79);
+    //! delete tree here
+    tree.Remove(36);
+
+    tree.Remove(79);
 
     for(auto &&i: a) {
-        tree.insert(i);
+        tree.Insert(i);
     }
 
     std::cout<<"It works"<<std::endl;

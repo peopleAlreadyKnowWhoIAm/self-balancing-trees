@@ -1,191 +1,84 @@
-#include "red-black-tree.h"
+#include "red-black-tree.hpp"
 
-void RedBlackTree::LeftLeftRot(Node* pChild) {
-    Node* pParent = pChild->pParent;
-    Node* pT3 = pParent->pRight;
-    Node* pGrandparent = pParent->pParent;
+#include <iostream>
 
-    //Replace `Great-grandparent` pointer if exist
-    if (pGrandparent->pParent != nullptr) {
-        Node* pGreatgrandparent = pGrandparent->pParent;
-        if (pGreatgrandparent->pLeft == pGrandparent) {
-            pGreatgrandparent->pLeft = pParent;
-        }
-        else {
-            pGreatgrandparent->pRight = pParent;
-        }
+using std::cout, std::endl;
 
-        pParent->pParent = pGreatgrandparent;
-    }
-    else {
-        pRoot = pParent;
-        pRoot->pParent = nullptr;
-    }
-
-    pParent->pRight = pGrandparent;
-    pGrandparent->pParent = pParent;
-    pParent->color = black;
-
-    pGrandparent->pLeft = pT3;
-    if (pT3 != nullptr) {
-        pT3->pParent = pGrandparent;
-    }
-    pGrandparent->color = red;
-
-}
-
-void RedBlackTree::LeftRightRot(Node* pChild) {
-    Node* pT2 = pChild->pLeft;
-    Node* pParent = pChild->pParent;
-    Node* pGrandparent = pParent->pParent;
-
-    //Prepare parent
-    pParent->pRight = pT2;
-    if (pT2 != nullptr) {
-        pT2->pParent = pParent;
-    }
-    pParent->pParent = pChild;
-
-    //Prepare child
-    pChild->pLeft = pParent;
-    pGrandparent->pLeft = pChild;
-    pChild->pParent = pGrandparent;
-
-    LeftLeftRot(pParent);
-}
-
-void RedBlackTree::RightRightRot(Node* pChild) {
-    Node* pParent = pChild->pParent;
-    Node* pT3 = pParent->pLeft;
-    Node* pGrandparent = pParent->pParent;
-
-    //Replace `Great-grandparent` pointer if exist
-    if (pGrandparent->pParent != nullptr) {
-        Node* pGreatgrandparent = pGrandparent->pParent;
-        if (pGreatgrandparent->pLeft == pGrandparent) {
-            pGreatgrandparent->pLeft = pParent;
-        }
-        else {
-            pGreatgrandparent->pRight = pParent;
-        }
-
-        pParent->pParent = pGreatgrandparent;
-    }
-    else {
-        pRoot = pParent;
-        pRoot->pParent = nullptr;
-    }
-
-    //Prepare Parent
-    pParent->pLeft = pGrandparent;
-    pGrandparent->pParent = pParent;
-    pParent->color = black;
-
-    //Prepare Grandparent
-    pGrandparent->pRight = pT3;
-    if (pT3 != nullptr) {
-        pT3->pParent = pGrandparent;
-    }
-
-    pGrandparent->color = red;
-}
-
-void RedBlackTree::RightLeftRot(Node* pChild) {
-    Node* pT4 = pChild->pRight;
-    Node* pParent = pChild->pParent;
-    Node* pGrandparent = pParent->pParent;
-
-    //Prepare parent
-    pParent->pLeft = pT4;
-    if (pT4 != nullptr) {
-        pT4->pParent = pParent;
-    }
-    pParent->pParent = pChild;
-
-    //Prepare child
-    pChild->pRight = pParent;
-    pGrandparent->pRight = pChild;
-    pChild->pParent = pGrandparent;
-
-    RightRightRot(pParent);
-}
-
-void RedBlackTree::RedUncleCase(Node* pChild) {
-    Node* pParent = pChild->pParent;
-    pParent->color = black;
-    Node* pGrandparent = pParent->pParent;
-    if (pGrandparent != pRoot)
-        pGrandparent->color = red;
+void RedBlackTree::RedUncleCase(RbNode* ptr_child) {
+    cout << "Red uncle case on val: " << ptr_child->value << ", addr: " << ptr_child << endl;
+    RbNode* ptr_parent = static_cast<RbNode*>(ptr_child->ptr_parent);
+    ptr_parent->color = black;
+    RbNode* ptr_grandparent = static_cast<RbNode*>(ptr_parent->ptr_parent);
+    if (ptr_grandparent != ptr_root_)
+        ptr_grandparent->color = red;
 
     //Uncle could be right or left depends which parent is
-    if (pGrandparent->pLeft == pParent) {
-        pGrandparent->pRight->color = black;
+    if (ptr_grandparent->ptr_left == ptr_parent) {
+        static_cast<RbNode*>(ptr_grandparent->ptr_right)->color = black;
     }
     else {
-        pGrandparent->pLeft->color = black;
+        static_cast<RbNode*>(ptr_grandparent->ptr_left)->color = black;
     }
 
     //If grandparents has 2 ancestors maybe
-    if (pGrandparent->pParent != nullptr && pGrandparent->pParent->pParent != nullptr) {
-        balanceTree(pGrandparent);
+    if (ptr_grandparent->ptr_parent != nullptr && ptr_grandparent->ptr_parent->ptr_parent != nullptr) {
+        balanceTree(ptr_grandparent);
     }
 
 }
 
-RedBlackTree::Node::~Node() {
-    delete pLeft;
-    delete pRight;
-}
+RedBlackTree::RbNode::RbNode(int value)
+    :Node(value) {}
 
-void RedBlackTree::Node::deleteWithoutChilds() {
-    pLeft = nullptr;
-    pRight = nullptr;
-    delete this;
-}
+RedBlackTree::RbNode::~RbNode() {}
 
-void RedBlackTree::insert(const int& value) {
-    Node* pChild = new Node(value);
-    Node* pParent = GoThrough(value);
+RedBlackTree::~RedBlackTree() {}
+
+void RedBlackTree::Insert(const int value) {
+    RbNode* ptr_child = new RbNode(value);
+    RbNode* ptr_parent = static_cast<RbNode*>(GoThrough(value));
 
     //Only if there are not the value in the tree
-    if (pParent == nullptr || pParent->value != value) {
+    if (ptr_parent == nullptr || ptr_parent->value != value) {
 
         //It not depends from position
-        pChild->pParent = pParent;
+        //Could be root
+        ptr_child->ptr_parent = ptr_parent;
 
-        //RootNode
-        if (pParent == nullptr) {
-            pChild->color = black;
-            pRoot = pChild;
+        //RootNode  case
+        if (ptr_parent == nullptr) {
+            cout << "Inserted as root val: " << ptr_child << endl;
+            ptr_child->color = black;
+            ptr_root_ = ptr_child;
         }
         else {
 
             //Paste child in parent
-            if (value > pParent->value) {
-                pParent->pRight = pChild;
+            if (value > ptr_parent->value) {
+                ptr_parent->ptr_right = ptr_child;
             }
             else {
-                pParent->pLeft = pChild;
+                ptr_parent->ptr_left = ptr_child;
             }
 
-            balanceTree(pChild);
+            balanceTree(ptr_child);
         }
 
     }
 }
 
-void RedBlackTree::balanceTree(Node* pChild) {
-    Node* pParent = pChild->pParent;
-    if (pParent != nullptr) {
-        Node* pGrandparent = pParent->pParent;
+void RedBlackTree::balanceTree(RbNode* ptr_child) {
+    RbNode* ptr_parent = static_cast<RbNode*>(ptr_child->ptr_parent);
+    if (ptr_parent != nullptr) {
+        RbNode* ptr_grandparent = static_cast<RbNode*>(ptr_parent->ptr_parent);
 
 
         //if parent isn't root or parent are black there nothing to do 
-        if (pGrandparent != nullptr && pParent->color == red) {
+        if (ptr_grandparent != nullptr && ptr_parent->color == red) {
             int uncleColor;
             //If uncle exist else black
-            if (pGrandparent->pLeft == pParent) {
-                Node* pUncle = pGrandparent->pRight;
+            if (ptr_grandparent->ptr_left == ptr_parent) {
+                RbNode* pUncle = static_cast<RbNode*>(ptr_grandparent->ptr_right);
                 if (pUncle == nullptr) {
                     uncleColor = black;
                 }
@@ -194,7 +87,7 @@ void RedBlackTree::balanceTree(Node* pChild) {
                 }
             }
             else {
-                Node* pUncle = pGrandparent->pLeft;
+                RbNode* pUncle = static_cast<RbNode*>(ptr_grandparent->ptr_left);
                 if (pUncle == nullptr) {
                     uncleColor = black;
                 }
@@ -204,264 +97,246 @@ void RedBlackTree::balanceTree(Node* pChild) {
             }
 
             if (uncleColor == red) {
-                RedUncleCase(pChild);
+                RedUncleCase(ptr_child);
             }
             else {
 
                 //Locate child relative parent and grandparent
-                bool isChildRightParent = (pParent->pRight == pChild);
+                bool isChildRightParent = (ptr_parent->ptr_right == ptr_child);
 
-                bool isParentRightGrandparent = (pGrandparent->pRight == pParent);
+                bool isParentRightGrandparent = (ptr_grandparent->ptr_right == ptr_parent);
 
                 if (isParentRightGrandparent) {
                     if (isChildRightParent) {
-                        RightRightRot(pChild);
+                        RightRightRot(ptr_child);
+                        ptr_grandparent->color = red;
+                        ptr_parent->color = black;
                     }
                     else {
-                        RightLeftRot(pChild);
+                        RightLeftRot(ptr_child);
+                        ptr_grandparent->color = red;
+                        ptr_child->color = black;
                     }
                 }
                 else {
                     if (isChildRightParent) {
-                        LeftRightRot(pChild);
+                        LeftRightRot(ptr_child);
+                        ptr_grandparent->color = red;
+                        ptr_child->color = black;
                     }
                     else {
-                        LeftLeftRot(pChild);
+                        LeftLeftRot(ptr_child);
+                        ptr_grandparent->color = red;
+                        ptr_parent->color = black;
                     }
+
                 }
+
 
             }
         }
     }
 }
 
-RedBlackTree::Node* RedBlackTree::GoThrough(const int& value, Node* pRoot/* = nullptr*/) const {
-    Node* pParent = nullptr, * pChild = pRoot;
 
-    if (pChild == nullptr) {
-        pChild = this->pRoot;
-    }
-
-    while (pChild != nullptr) {
-        pParent = pChild;
-
-        if (pParent->value == value) {
-            break;
-        }
-
-        if (value > pParent->value) {
-            pChild = pParent->pRight;
-        }
-        else {
-            pChild = pParent->pLeft;
-        }
-    }
-
-    return pParent;
-}
-
-
-void RedBlackTree::remove(const int value) {
-    Node* pDelete = GoThrough(value);
+void RedBlackTree::Remove(const int value) {
+    RbNode* ptr_delete = static_cast<RbNode*>(GoThrough(value));
     //If nullptr there aren't this value in the tree
-    if (pDelete != nullptr) {
+    if (ptr_delete != nullptr) {
 
         //Find replacement and replace
         //If not a single child
-        if (pDelete->pRight != nullptr && pDelete->pLeft != nullptr) {
-            Node* pToPaste = GoThrough(pDelete->value, pDelete->pLeft);
-            pDelete->value = pToPaste->value;
+        if (ptr_delete->ptr_right != nullptr && ptr_delete->ptr_left != nullptr) {
+            RbNode* ptr_to_paste = static_cast<RbNode*>(GoThrough(ptr_delete->value, ptr_delete->ptr_left));
+            ptr_delete->value = ptr_to_paste->value;
 
             //Update node to delete
             //Because we copied from here value
-            pDelete = pToPaste;
+            ptr_delete = ptr_to_paste;
         }
 
         //explore case
         //parent - node to delete
-        int parentColor = pDelete->color;
+        int parentColor = ptr_delete->color;
         int reddestChildColor = black;
-        Node* pChild = nullptr, * pParent = pDelete;
+        RbNode* ptr_child = nullptr, * ptr_parent = ptr_delete;
         bool isChildRight;
-        if (pParent->pLeft != nullptr) {
-            pChild = pParent->pLeft;
+        if (ptr_parent->ptr_left != nullptr) {
+            ptr_child = static_cast<RbNode*>(ptr_parent->ptr_left);
             isChildRight = false;
-            reddestChildColor = pChild->color;
+            reddestChildColor = ptr_child->color;
         }
-        else if (pParent->pRight != nullptr) {
-            pChild = pParent->pRight;
+        else if (ptr_parent->ptr_right != nullptr) {
+            ptr_child = static_cast<RbNode*>(ptr_parent->ptr_right);
             isChildRight = true;
-            reddestChildColor = pChild->color;
+            reddestChildColor = ptr_child->color;
         }
 
         //Edge case
-        if(pRoot = pDelete){
-            pRoot = nullptr;
-        } else
-        //Case 1
-        //Parent or child are red
-        if (reddestChildColor == red || parentColor == red) {
-            pChild->color = black;
-            //If parent root
-            if (pParent->pParent == nullptr) {
-                pChild->pParent = nullptr;
-                pRoot = pChild;
+        if (ptr_root_ == ptr_delete && ptr_root_ ->ptr_left == nullptr && ptr_root_ -> ptr_right == nullptr) {
+            ptr_root_ = nullptr;
+        }
+        else
+            //Case 1
+            //Parent or child are red
+            if (reddestChildColor == red || parentColor == red) {
+                ptr_child->color = black;
+                //If parent root
+                if (ptr_parent->ptr_parent == nullptr) {
+                    ptr_child->ptr_parent = nullptr;
+                    ptr_root_ = ptr_child;
 
-            }
-            else {
-                Node* pGrandparent = pParent->pParent;
-                bool isRightParent = (pGrandparent->pRight == pParent);
-
-
-                //Exclude parent from tree
-                pChild->pParent = pGrandparent;
-                if (isRightParent) {
-                    pGrandparent->pRight = pChild;
                 }
                 else {
-                    pGrandparent->pLeft = pChild;
+                    Node* ptr_grandparent = ptr_parent->ptr_parent;
+                    bool isRightParent = (ptr_grandparent->ptr_right == ptr_parent);
+
+
+                    //Exclude parent from tree
+                    ptr_child->ptr_parent = ptr_grandparent;
+                    if (isRightParent) {
+                        ptr_grandparent->ptr_right = ptr_child;
+                    }
+                    else {
+                        ptr_grandparent->ptr_left = ptr_child;
+                    }
+
                 }
 
             }
-
-        }
-        else {
-            bool isParentRight = (pParent->pParent->pRight == pParent);
-            
-
-            rebalanceDBlackCase(pParent);
-
-            if (isParentRight) {
-                pParent->pParent->pRight = nullptr;
-            }
             else {
-                pParent->pParent->pLeft = nullptr;
-            }
+                bool isParentRight = (ptr_parent->ptr_parent->ptr_right == ptr_parent);
 
-            pRoot->color = Color::black;
-        }
-        pParent->deleteWithoutChilds();
+
+                rebalanceDBlackCase(ptr_parent);
+
+                if (isParentRight) {
+                    ptr_parent->ptr_parent->ptr_right = nullptr;
+                }
+                else {
+                    ptr_parent->ptr_parent->ptr_left = nullptr;
+                }
+
+                static_cast<RbNode*>(ptr_root_)->color = Color::black;
+            }
+        ptr_parent->DeleteWithoutChilds();
     }
 }
 
-void RedBlackTree::rebalanceDBlackCase(Node* pParent) {
+void RedBlackTree::rebalanceDBlackCase(RbNode* ptr_parent) {
     //Child and parent was black
     //Parent - double black
 
     //And always has null children
-    Node* pGrandparent = pParent->pParent;
-    if(pGrandparent == nullptr) {
-        pParent->color = Color::black;
+    RbNode* ptr_grandparent = static_cast<RbNode*>(ptr_parent->ptr_parent);
+    if (ptr_grandparent == nullptr) {
+        ptr_parent->color = Color::black;
         return;
     }
 
 
     //Grandparent rigth or left is double black
-    Node* pSibling;
+    RbNode* ptr_sibling;
 
-    bool isSiblingRight = pGrandparent->pRight != pParent;
+    bool isSiblingRight = ptr_grandparent->ptr_right != ptr_parent;
 
 
     if (isSiblingRight) {
-        pSibling = pGrandparent->pRight;
+        ptr_sibling = static_cast<RbNode*>(ptr_grandparent->ptr_right);
     }
     else {
-        pSibling = pGrandparent->pLeft;
+        ptr_sibling = static_cast<RbNode*>(ptr_grandparent->ptr_left);
     }
 
 
 
     //Case 2 and 3 sibling are black
-    if (pSibling == nullptr || pSibling->color == black) {
+    if (ptr_sibling == nullptr || ptr_sibling->color == black) {
         int reddestSiblingChildrenColor = black;
         bool isReddestChildrenRight;
-        Node* pSiblingRedChild = nullptr;
+        RbNode* ptr_siblings_red_child = nullptr;
 
-        if (pSibling != nullptr) {
-            if (pSibling->pRight != nullptr && pSibling->pRight->color == red) {
+        if (ptr_sibling != nullptr) {
+            if (ptr_sibling->ptr_right != nullptr && static_cast<RbNode*>(ptr_sibling->ptr_right)->color == red) {
                 isReddestChildrenRight = true;
-                pSiblingRedChild = pSibling->pRight;
+                ptr_siblings_red_child = static_cast<RbNode*>(ptr_sibling->ptr_right);
             }
-            else if (pSibling->pLeft != nullptr && pSibling->pLeft->color == red) {
+            else if (ptr_sibling->ptr_left != nullptr && static_cast<RbNode*>(ptr_sibling->ptr_left)->color == red) {
                 isReddestChildrenRight = false;
-                pSiblingRedChild = pSibling->pLeft;
+                ptr_siblings_red_child = static_cast<RbNode*>(ptr_sibling->ptr_left);
             }
         }
 
         //Case 2
         //Needs rotation
-        if (pSiblingRedChild != nullptr) {
-
+        if (ptr_siblings_red_child != nullptr) {
             if (isSiblingRight) {
                 if (isReddestChildrenRight) {
-                    RightRightRot(pSiblingRedChild);
+                    RightRightRot(ptr_siblings_red_child);
                 }
                 else {
-                    RightLeftRot(pSiblingRedChild);
-                    pSibling = pSiblingRedChild;
-
+                    RightLeftRot(ptr_siblings_red_child);
+                    ptr_sibling = ptr_siblings_red_child;
                 }
             }
             else {
                 if (isReddestChildrenRight) {
-                    LeftRightRot(pSiblingRedChild);
-                    pSibling = pSiblingRedChild;
+                    LeftRightRot(ptr_siblings_red_child);
+                    ptr_sibling = ptr_siblings_red_child;
                 }
                 else {
-                    LeftLeftRot(pSiblingRedChild);
+                    LeftLeftRot(ptr_siblings_red_child);
                 }
             }
+            ptr_grandparent->color = red;
 
-            if (pSibling->pLeft != nullptr) {
-                pSibling->pLeft->color = black;
+            if (ptr_sibling->ptr_left != nullptr) {
+                static_cast<RbNode*>(ptr_sibling->ptr_left)->color = black;
             }
-            if (pSibling->pRight != nullptr) {
-                pSibling->pRight->color = black;
+            if (ptr_sibling->ptr_right != nullptr) {
+                static_cast<RbNode*>(ptr_sibling->ptr_right)->color = black;
             }
-            pSibling->color = Color::red;
-
+            ptr_sibling->color = Color::red;
         }
         //Case 3 recoloring
         else {
-            recolor(pGrandparent, pParent);
+            recolor(ptr_grandparent, ptr_parent);
         }
-
-
     }
     //Case 4 Sibling is red
     else {
         if (isSiblingRight) {
-            RightRightRot(pSibling->pRight);
+            RightRightRot(ptr_sibling->ptr_right);
         }
         else {
-            LeftLeftRot(pSibling->pLeft);
+            LeftLeftRot(ptr_sibling->ptr_left);
         }
-        recolor(pGrandparent, pParent);
+        ptr_grandparent->color = red;
+        ptr_sibling->color = black;
+        recolor(ptr_grandparent, ptr_parent);
     }
-
 }
 
 
 
 
-void RedBlackTree::recolor(Node* node, Node* from /*= nullptr*/) {
-        if (from != nullptr) {
-
-            //Paint sibling red
-            //They must be black
-            if (node->pLeft == from && node->pRight != nullptr) {
-                node->pRight -> color = Color::red;
-            }
-            else if (node->pRight == from && node->pLeft != nullptr) {
-                node->pLeft -> color = Color::red;
-            }
+void RedBlackTree::recolor(RbNode* node, RbNode* from /*= nullptr*/) {
+    if (from != nullptr) {
+        //Paint sibling red
+        //They must be black
+        if (node->ptr_left == from && node->ptr_right != nullptr) {
+            static_cast<RbNode*>(node->ptr_right)->color = Color::red;
         }
-
-        if (node->color == black) {
-            //Relative the node will be working with node parent
-            rebalanceDBlackCase(node);
-        }
-        else {
-            node->color = black;
+        else if (node->ptr_right == from && node->ptr_left != nullptr) {
+            static_cast<RbNode*>(node->ptr_left)->color = Color::red;
         }
     }
+
+    if (node->color == black) {
+        //Relative the node will be working with node parent
+        rebalanceDBlackCase(node);
+    }
+    else {
+        node->color = black;
+    }
+}
