@@ -18,6 +18,7 @@ VirtualSelfBalancedTree::Node::~Node() {
 void VirtualSelfBalancedTree::Node::DeleteWithoutChilds() {
    ptr_right = nullptr;
    ptr_left = nullptr;
+   ptr_parent = nullptr;
    delete this; 
 }
 
@@ -44,7 +45,7 @@ void VirtualSelfBalancedTree::UpdateGreatgrandparent(Node* ptr_parent, Node* ptr
     }
 }
 
-void VirtualSelfBalancedTree::LeftLeftRot(Node* ptr_child) {
+void VirtualSelfBalancedTree::LeftLeftCase(Node* ptr_child) {
 
     Node* ptr_parent = ptr_child->ptr_parent;
     Node* pT3 = ptr_parent->ptr_right;
@@ -61,7 +62,7 @@ void VirtualSelfBalancedTree::LeftLeftRot(Node* ptr_child) {
     }
 }
 
-void VirtualSelfBalancedTree::LeftRightRot(Node* ptr_child) {
+void VirtualSelfBalancedTree::LeftRightCase(Node* ptr_child) {
     Node* pT2 = ptr_child->ptr_left;
     Node* ptr_parent = ptr_child->ptr_parent;
     Node* ptr_grandparent = ptr_parent->ptr_parent;
@@ -78,10 +79,10 @@ void VirtualSelfBalancedTree::LeftRightRot(Node* ptr_child) {
     ptr_grandparent->ptr_left = ptr_child;
     ptr_child->ptr_parent = ptr_grandparent;
 
-    LeftLeftRot(ptr_parent);
+    LeftLeftCase(ptr_parent);
 }
 
-void VirtualSelfBalancedTree::RightRightRot(Node* ptr_child) {
+void VirtualSelfBalancedTree::RightRightCase(Node* ptr_child) {
     Node* ptr_parent = ptr_child->ptr_parent;
     Node* pT3 = ptr_parent->ptr_left;
     Node* ptr_grandparent = ptr_parent->ptr_parent;
@@ -99,7 +100,7 @@ void VirtualSelfBalancedTree::RightRightRot(Node* ptr_child) {
     }
 }
 
-void VirtualSelfBalancedTree::RightLeftRot(Node* ptr_child) {
+void VirtualSelfBalancedTree::RightLeftCase(Node* ptr_child) {
     Node* pT4 = ptr_child->ptr_right;
     Node* ptr_parent = ptr_child->ptr_parent;
     Node* ptr_grandparent = ptr_parent->ptr_parent;
@@ -116,7 +117,7 @@ void VirtualSelfBalancedTree::RightLeftRot(Node* ptr_child) {
     ptr_grandparent->ptr_right = ptr_child;
     ptr_child->ptr_parent = ptr_grandparent;
 
-    RightRightRot(ptr_parent);
+    RightRightCase(ptr_parent);
 }
 
 VirtualSelfBalancedTree::Node* VirtualSelfBalancedTree::GoThrough(const int value, Node* ptr_root/* = nullptr*/) const {

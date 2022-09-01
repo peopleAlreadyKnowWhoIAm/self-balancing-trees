@@ -5,7 +5,7 @@
 ### Lab for Lviv polytechnic university
 
 - [x] Red-Black tree
-- [ ] AVL tree
+- [x] AVL tree
 
 ### Explanation and algorithm structure used
 

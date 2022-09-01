@@ -19,13 +19,13 @@ protected:
         ~Node();
         void DeleteWithoutChilds();
 
-        virtual string& to_string() const = 0;
+        virtual string ToString() const = 0;
     };
 
-    void LeftLeftRot(Node* pChild);
-    void LeftRightRot(Node* pChild);
-    void RightLeftRot(Node* pChild);
-    void RightRightRot(Node* pChild);
+    void LeftLeftCase(Node* pChild);
+    void LeftRightCase(Node* pChild);
+    void RightLeftCase(Node* pChild);
+    void RightRightCase(Node* pChild);
 
     void UpdateGreatgrandparent(Node* ptr_parent, Node* ptr_grandparent);
 
@@ -35,10 +35,11 @@ protected:
 
     Node* ptr_root_ = nullptr;
 public:
-    virtual ~VirtualSelfBalancedTree();
+    ~VirtualSelfBalancedTree();
 
     virtual void Insert(const int) = 0;
     virtual void Remove(const int) = 0;
 
-    string& to_string() const;
+    //TODO rewrite
+    string ToString() const;
 };

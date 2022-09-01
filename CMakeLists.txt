@@ -6,6 +6,8 @@ project(RedBlackTreeExec)
 
 add_subdirectory(virtual-self-balanced-tree)
 add_subdirectory(red-black-tree)
+add_subdirectory(avl-tree)
 
 add_executable(RedBlackTreeExec main.cpp)
 target_link_libraries(RedBlackTreeExec RedBlackTree)
+target_link_libraries(RedBlackTreeExec AVLTree)

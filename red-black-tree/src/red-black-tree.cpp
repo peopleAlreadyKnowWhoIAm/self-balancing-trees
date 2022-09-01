@@ -27,7 +27,7 @@ void RedBlackTree::RedUncleCase(RbNode* ptr_child) {
 
 }
 
-RedBlackTree::RbNode::RbNode(int value)
+RedBlackTree::RbNode::RbNode(const int value)
     :Node(value) {}
 
 RedBlackTree::RbNode::~RbNode() {}
@@ -108,24 +108,24 @@ void RedBlackTree::balanceTree(RbNode* ptr_child) {
 
                 if (isParentRightGrandparent) {
                     if (isChildRightParent) {
-                        RightRightRot(ptr_child);
+                        RightRightCase(ptr_child);
                         ptr_grandparent->color = red;
                         ptr_parent->color = black;
                     }
                     else {
-                        RightLeftRot(ptr_child);
+                        RightLeftCase(ptr_child);
                         ptr_grandparent->color = red;
                         ptr_child->color = black;
                     }
                 }
                 else {
                     if (isChildRightParent) {
-                        LeftRightRot(ptr_child);
+                        LeftRightCase(ptr_child);
                         ptr_grandparent->color = red;
                         ptr_child->color = black;
                     }
                     else {
-                        LeftLeftRot(ptr_child);
+                        LeftLeftCase(ptr_child);
                         ptr_grandparent->color = red;
                         ptr_parent->color = black;
                     }
@@ -272,20 +272,20 @@ void RedBlackTree::rebalanceDBlackCase(RbNode* ptr_parent) {
         if (ptr_siblings_red_child != nullptr) {
             if (isSiblingRight) {
                 if (isReddestChildrenRight) {
-                    RightRightRot(ptr_siblings_red_child);
+                    RightRightCase(ptr_siblings_red_child);
                 }
                 else {
-                    RightLeftRot(ptr_siblings_red_child);
+                    RightLeftCase(ptr_siblings_red_child);
                     ptr_sibling = ptr_siblings_red_child;
                 }
             }
             else {
                 if (isReddestChildrenRight) {
-                    LeftRightRot(ptr_siblings_red_child);
+                    LeftRightCase(ptr_siblings_red_child);
                     ptr_sibling = ptr_siblings_red_child;
                 }
                 else {
-                    LeftLeftRot(ptr_siblings_red_child);
+                    LeftLeftCase(ptr_siblings_red_child);
                 }
             }
             ptr_grandparent->color = red;
@@ -306,10 +306,10 @@ void RedBlackTree::rebalanceDBlackCase(RbNode* ptr_parent) {
     //Case 4 Sibling is red
     else {
         if (isSiblingRight) {
-            RightRightRot(ptr_sibling->ptr_right);
+            RightRightCase(ptr_sibling->ptr_right);
         }
         else {
-            LeftLeftRot(ptr_sibling->ptr_left);
+            LeftLeftCase(ptr_sibling->ptr_left);
         }
         ptr_grandparent->color = red;
         ptr_sibling->color = black;
