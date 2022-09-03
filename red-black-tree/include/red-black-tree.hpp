@@ -12,7 +12,7 @@ class RedBlackTree : public VirtualSelfBalancedTree {
     struct RbNode : public VirtualSelfBalancedTree::Node {
         Color color = red;
 
-        string ToString() const { return  string(); };
+        string to_string() const;
 
         RbNode(const int value);
         virtual ~RbNode();
@@ -29,6 +29,8 @@ class RedBlackTree : public VirtualSelfBalancedTree {
     void rebalanceDBlackCase(RbNode* ptr_child);
 
     void recolor(RbNode* node, RbNode* from = nullptr);
+
+    char const* GetType() const;
 
 public:
     virtual ~RedBlackTree();

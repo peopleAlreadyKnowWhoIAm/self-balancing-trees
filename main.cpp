@@ -4,7 +4,7 @@
 
 #include <iostream>
 
-using std::vector, std::cout, std::endl;
+using std::vector, std::cout, std::endl, std::cin;
 
 int main() {
     vector a = { 
@@ -13,9 +13,11 @@ int main() {
     RedBlackTree tree;
 
     for (auto i : a) {
-        cout<<i<<endl;
         tree.Insert(i);
+        cout<<tree.to_string();
     }
+
+    cout<<tree.to_string();
 
     tree.Remove(49);
 
@@ -40,39 +42,11 @@ int main() {
     for(auto &&i: a) {
              atree.Insert(i);
     }
-    atree.writeout();
+    cout<<atree.to_string();
     atree.Remove(49);
     atree.Remove(42);
     atree.Remove(81);
-    atree.writeout();
-    atree.Remove(67);
-    atree.writeout();
-    atree.Remove(70);
-    atree.writeout();
-    atree.Remove(75);
-    atree.writeout();
-    atree.Remove(97);
-    atree.writeout();
-    atree.Remove(51);
-    atree.writeout();
-    atree.Remove(6);
-    atree.writeout();
-    atree.Remove(43);
-    atree.writeout();
-    atree.Remove(5);
-    atree.writeout();
-    atree.Remove(32);
-    atree.writeout();
-    atree.Remove(93);
-    atree.writeout();
-    atree.Remove(56);
-    atree.writeout();
-    atree.Remove(36);
-    atree.writeout();
-    atree.Remove(79);
-    atree.writeout();
-
-    std::cout<<"It works"<<std::endl;
+    cout<<atree.to_string();
 
     return 0;
 }

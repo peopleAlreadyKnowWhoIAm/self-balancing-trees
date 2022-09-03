@@ -144,3 +144,38 @@ VirtualSelfBalancedTree::Node* VirtualSelfBalancedTree::GoThrough(const int valu
 
     return ptr_parent;
 }
+
+stringstream VirtualSelfBalancedTree::to_string_(Node* ptr_parent, int parent_value) const {
+        stringstream out;
+        if (parent_value == __INT_MAX__) {
+            out << GetType() << endl;
+        }
+
+        if (ptr_parent == nullptr) {
+            ptr_parent = ptr_root_;
+        }
+        //Double check if tree is empty
+        if (ptr_parent != nullptr) {
+            out << ptr_parent->to_string();
+            if (parent_value != __INT_MAX__) {
+                out << " " << parent_value;
+            }
+            out << endl;
+
+            parent_value = ptr_parent->value;
+            if (ptr_parent->ptr_left != nullptr) {
+                out<< to_string_(ptr_parent->ptr_left, parent_value).str();
+            }
+            if (ptr_parent->ptr_right != nullptr) {
+                out << to_string_(ptr_parent->ptr_right, parent_value).str();
+            }
+        }
+
+        return out;
+}
+
+string VirtualSelfBalancedTree::to_string() const {
+    stringstream out =  to_string_(ptr_root_, __INT_MAX__);
+    out<<endl;
+    return out.str();
+}

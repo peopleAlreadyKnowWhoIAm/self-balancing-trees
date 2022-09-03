@@ -1,11 +1,18 @@
 #include "red-black-tree.hpp"
 
-#include <iostream>
+RedBlackTree::RbNode::RbNode(const int value)
+    :Node(value) {}
 
-using std::cout, std::endl;
+RedBlackTree::RbNode::~RbNode() {}
+
+string RedBlackTree::RbNode::to_string() const {
+    const char* color = (this->color == Color::red)?"red":"black";
+    return string(std::to_string(this->value) + ' ' + color);
+}
+
+RedBlackTree::~RedBlackTree() {}
 
 void RedBlackTree::RedUncleCase(RbNode* ptr_child) {
-    cout << "Red uncle case on val: " << ptr_child->value << ", addr: " << ptr_child << endl;
     RbNode* ptr_parent = static_cast<RbNode*>(ptr_child->ptr_parent);
     ptr_parent->color = black;
     RbNode* ptr_grandparent = static_cast<RbNode*>(ptr_parent->ptr_parent);
@@ -27,12 +34,6 @@ void RedBlackTree::RedUncleCase(RbNode* ptr_child) {
 
 }
 
-RedBlackTree::RbNode::RbNode(const int value)
-    :Node(value) {}
-
-RedBlackTree::RbNode::~RbNode() {}
-
-RedBlackTree::~RedBlackTree() {}
 
 void RedBlackTree::Insert(const int value) {
     RbNode* ptr_child = new RbNode(value);
@@ -47,7 +48,6 @@ void RedBlackTree::Insert(const int value) {
 
         //RootNode  case
         if (ptr_parent == nullptr) {
-            cout << "Inserted as root val: " << ptr_child << endl;
             ptr_child->color = black;
             ptr_root_ = ptr_child;
         }
@@ -340,3 +340,5 @@ void RedBlackTree::recolor(RbNode* node, RbNode* from /*= nullptr*/) {
         node->color = black;
     }
 }
+
+char const* RedBlackTree::GetType() const{ return "RB";}

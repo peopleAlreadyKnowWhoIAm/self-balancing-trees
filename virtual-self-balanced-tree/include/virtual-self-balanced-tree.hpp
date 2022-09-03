@@ -1,8 +1,9 @@
 #pragma once
 
 #include <string>
+#include <sstream>
 
-using std::string;
+using std::string, std::stringstream, std::endl;
 
 
 
@@ -19,7 +20,7 @@ protected:
         ~Node();
         void DeleteWithoutChilds();
 
-        virtual string ToString() const = 0;
+        virtual string to_string() const = 0;
     };
 
     void LeftLeftCase(Node* pChild);
@@ -34,12 +35,16 @@ protected:
     Node* GoThrough(const int value, Node* ptr_root = nullptr) const;
 
     Node* ptr_root_ = nullptr;
+
+    stringstream to_string_(Node* root, int parent_value) const;
+
+    virtual char const* GetType() const = 0;
+    
 public:
     ~VirtualSelfBalancedTree();
 
     virtual void Insert(const int) = 0;
     virtual void Remove(const int) = 0;
 
-    //TODO rewrite
-    string ToString() const;
+    string to_string() const;
 };

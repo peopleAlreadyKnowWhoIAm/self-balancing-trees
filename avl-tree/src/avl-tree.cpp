@@ -2,16 +2,22 @@
 
 #include<algorithm>
 
-#include<iostream>
 
-using std::max, std::cout, std::endl;
+using std::max;
 
 AvlTree::AvlNode::AvlNode(const int value)
     : Node(value) {}
 
 AvlTree::AvlNode::~AvlNode() {}
 
+
+string AvlTree::AvlNode::to_string() const {
+    return string(std::to_string(value) + " " + std::to_string(height));
+}
+
 AvlTree::~AvlTree() {}
+
+char const* AvlTree::GetType() const {return "AVL";}
 
 
 void AvlTree::UpdateBalanceToRoot(AvlNode* ptr_child, bool inserted) {
@@ -106,7 +112,6 @@ void AvlTree::Insert(const int value) {
 
         //RootNode  case
         if (ptr_parent == nullptr) {
-            cout << "Inserted as root val: " << ptr_child << endl;
             ptr_root_ = ptr_child;
         }
         else {
