@@ -23,12 +23,12 @@ protected:
         virtual string to_string() const = 0;
     };
 
-    void LeftLeftCase(Node* pChild);
-    void LeftRightCase(Node* pChild);
-    void RightLeftCase(Node* pChild);
-    void RightRightCase(Node* pChild);
+    void LeftLeftCase(Node* ptr_child);
+    void LeftRightCase(Node* ptr_child);
+    void RightLeftCase(Node* ptr_child);
+    void RightRightCase(Node* ptr_child);
 
-    void UpdateGreatgrandparent(Node* ptr_parent, Node* ptr_grandparent);
+    void UpdateParent(Node* ptr_parent, Node* ptr_grandparent);
 
     //Return parent, where to paste or node itself, if was found
     //If pRoot is nullptr then use pRoot of the class
@@ -39,7 +39,11 @@ protected:
     stringstream to_string_(Node* root, int parent_value) const;
 
     virtual char const* GetType() const = 0;
-    
+
+private:
+    void LeftRotation(Node* ptr_child);
+    void RightRotation(Node* ptr_child);
+
 public:
     ~VirtualSelfBalancedTree();
 
